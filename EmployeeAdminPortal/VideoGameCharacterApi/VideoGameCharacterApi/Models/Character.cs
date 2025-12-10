@@ -1,6 +1,6 @@
 ﻿namespace VideoGameCharacterApi.Models
 {
-    public class Character
+    public class CharacterResponse
     {
 
         public int Id { get; set; } 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VideoGameCharacterApi.Dtos;
 using VideoGameCharacterApi.Models;
 using VideoGameCharacterApi.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace VideoGameCharacterApi.Controllers
 {
@@ -12,22 +14,12 @@ namespace VideoGameCharacterApi.Controllers
         
 
         [HttpGet]
-        public async Task <ActionResult<List<Character>>> GetCharacters()
-
-            //var characters = new[]
-            //{
-            //    new Models.Character { Id = 1, Name = "Mario", Game = "super Mario Bros", Role = "Protagonist" },
-            //    new Models.Character { Id = 2, Name = "Link", Game = "The Legend of Zelda", Role = "Protagonist" },
-            //    new Models.Character { Id = 3, Name = "Master Chief", Game = "Halo", Role = "Protagonist" },
-            //};
-
+        public async Task <ActionResult<List<CharacterResponse>>> GetCharacters()    
             => Ok(await service.GetAllCharacterAsync());
-
-        //return Ok(characters);
 
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<Character>> GetCharacter(int id)
+        public async Task<ActionResult<CharacterResponse>> GetCharacter(int id)
         {
 
             var character = await service.GetCharacterByIdAsync(id);
@@ -36,7 +28,30 @@ namespace VideoGameCharacterApi.Controllers
                 return NotFound();
             }
             return Ok(character);
+        }
+        [HttpPost]
 
+        public async Task<ActionResult<CharacterResponse>> AddCharacter(CreateCharacterRequest character)
+        {
+            var createdCharacter = await service.AddCharacterAsync(character);
+
+            return CreatedAtAction(
+                nameof(GetCharacter),
+                new { id = createdCharacter.Id },  
+                createdCharacter);
+        }
+
+        [HttpPut]
+
+        public async Task<ActionResult> UpdateCharacter(int id, UpdateCharacterRequest character)
+        {
+            var updated = await service.UpdateCharacterAsync(id, character);
+            return updated ? NoContent() : NotFound();
+        }
+        public async Task<ActionResult>DeleteCharacter(int id)
+        {
+            var deleted = await service.DeleteCharacterAsync(id);
+            return deleted ? NoContent() : NotFound();
 
         }
 
