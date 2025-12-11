@@ -15,13 +15,34 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("All")]
-        public ActionResult<IEnumerable<Student>> GetStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
-            return Ok(CollegeRepository.Students);    
+            //var students = new List<StudentDTO>();
+            //foreach (var item in CollegeRepository.Students)
+            //{
+            //    StudentDTO obj = new StudentDTO()
+            //    {
+            //        Id = item.Id,
+            //        StudentName = item.StudentName,
+            //        Address = item.Address,
+            //        Email = item.Email
+            //    };
+            //    students.Add(obj);
+            //}
+
+            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+
+            {
+                Id = s.Id,
+                StudentName = s.StudentName,
+                Address = s.Address,
+                Email = s.Email
+            });
+            return Ok(students);    
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<Student> GetStudentById(int id)
+        public ActionResult<StudentDTO> GetStudentById(int id)
         {
             if(id <= 0) 
 
@@ -29,8 +50,14 @@ namespace CollegeApp.Controllers
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             if (student == null)
                 return NotFound();
-            
-            return Ok(student);
+            var studentDTO = new StudentDTO()
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Address = student.Address,
+                Email = student.Email
+            };
+            return Ok(studentDTO);
         }
 
 
@@ -48,7 +75,17 @@ namespace CollegeApp.Controllers
             if (student == null)
                 return NotFound($"No student found with name = {name}");
 
-            return Ok(student);
+            var studentDTO = new StudentDTO()
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Address = student.Address,
+                Email = student.Email
+            };
+            return Ok(studentDTO);
+
+
+           
         }
 
 
