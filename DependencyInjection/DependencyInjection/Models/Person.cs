@@ -6,18 +6,27 @@ using System.Threading.Tasks;
 
 namespace DependencyInjection.Models
 {
-    public class Person
+    public class Person : IPerson
     {
-        private Home _home;
-        private School _school;
+        private IHome _home;
+        private IEducationalinstitution _school;
 
-        private Hospital _hospital;
 
-        public Person()
+
+
+
+        public IEducationalinstitution School
         {
-            _home = new Home();
-            _school = new School();
-            _hospital = new Hospital();
+            set
+            {
+                _school = value;
+
+            }
+        }
+        public Person(IHome home)
+        {
+            _home = home;
+
         }
 
         public void TakeRefuge()
@@ -26,11 +35,15 @@ namespace DependencyInjection.Models
         }
         public void Study()
         {
-            _school.Teach(this);
+            if (_school != null)
+            {
+                _school.Teach(this);
+            }
         }
 
-        public void GetTreatment() { 
-        _hospital.Cure(this);
+        public void GetTreatment(IHospital hospital)
+        {
+            hospital.Cure(this);
         }
     }
 }

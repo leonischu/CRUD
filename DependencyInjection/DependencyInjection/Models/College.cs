@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace DependencyInjection.Models
 {
-    public class Home : IHome
+    public class College : IEducationalinstitution
     {
-        public void Provideshelter(IPerson person)
+        public void Teach(IPerson person)
         {
-            Console.WriteLine("Stay Home");
+            Console.WriteLine("Educate Person in college");
         }
-
-
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DependencyInjection.Models
 {
-    internal class Hospital
+    public class Hospital : IHospital
     {
-        internal void Cure(Person person)
+        public void Cure(IPerson person)
         {
             Console.WriteLine("Cure Person");
         }
