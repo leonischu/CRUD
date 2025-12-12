@@ -1,5 +1,6 @@
 ﻿using CollegeApp.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -153,7 +154,38 @@ namespace CollegeApp.Controllers
 
 
 
+        [HttpPatch]
+        [Route("{id:int}UpdatePartial")]
+        public ActionResult<StudentDTO> UpdateStudentPartial(int id,[FromBody] JsonPatchDocument<StudentDTO> patchDocument)
+        {
+            if (patchDocument == null || id <= 0)
+                BadRequest();
 
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id ==id).FirstOrDefault();
+
+
+            if (existingStudent == null)
+                return NotFound();
+
+            var studentDTO = new StudentDTO
+            {
+                Id = existingStudent.Id,
+                StudentName = existingStudent.StudentName,
+                Email = existingStudent.Email,
+                Address = existingStudent.Address
+            };
+
+            patchDocument.ApplyTo(studentDTO, ModelState);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+            existingStudent.StudentName = studentDTO.StudentName;
+            existingStudent.Email = studentDTO.Email;
+            existingStudent.Address = studentDTO.Address;
+            return Ok(existingStudent);
+        }
 
 
 
