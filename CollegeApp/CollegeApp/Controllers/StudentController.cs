@@ -13,11 +13,21 @@ namespace CollegeApp.Controllers
     [ProducesResponseType(404)]
     public class StudentController : ControllerBase
     {
+        private readonly ILogger<StudentController> _logger;
+        public StudentController(ILogger<StudentController> logger)
+        {
+            _logger = logger;
+        }
+
+
+
+
 
         [HttpGet]
         [Route("All")]
         public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
+            _logger.LogInformation("Get students method started");
             //var students = new List<StudentDTO>();
             //foreach (var item in CollegeRepository.Students)
             //{
@@ -45,11 +55,13 @@ namespace CollegeApp.Controllers
         [HttpGet("{id:int}", Name = "GetStudentById")]
         public ActionResult<StudentDTO> GetStudentById(int id)
         {
-            if(id <= 0) 
-
+            if (id <= 0)
+                _logger.LogWarning("Bad Request");
                 return BadRequest();
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             if (student == null)
+
+                _logger.LogError("Student not found with given Id");
                 return NotFound();
             var studentDTO = new StudentDTO()
             {
