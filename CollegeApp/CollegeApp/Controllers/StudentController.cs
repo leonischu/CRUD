@@ -95,6 +95,19 @@ namespace CollegeApp.Controllers
         {
             if (model == null)
                 return BadRequest();
+
+            if(model.AdmissionDate < DateTime.Now)
+            {
+                //1.Directly add the error message to model state 
+                //ModelState.AddModelError("Admission Error", "Admission date must be greater tha or equal to todays date");
+                //return BadRequest(ModelState);
+            // 2. Using the custom attributes 
+
+            
+            
+            }
+
+
             int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
             Student student = new Student {
                 Id = newId,
@@ -118,7 +131,24 @@ namespace CollegeApp.Controllers
 
 
 
+        [HttpPut]
+        [Route("Update")]
+        public ActionResult<StudentDTO> UpdateStudent([FromBody] StudentDTO model)
+        {
+            if (model == null || model.Id <= 0)
+                BadRequest();
 
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == model.Id).FirstOrDefault();
+
+
+            if (existingStudent == null)
+                return NotFound();
+
+            existingStudent.StudentName = model.StudentName;
+            existingStudent.Email = model.Email;
+            existingStudent.Address = model.Address;
+            return Ok(existingStudent);
+        }
 
 
 
