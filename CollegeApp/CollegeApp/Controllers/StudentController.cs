@@ -41,7 +41,7 @@ namespace CollegeApp.Controllers
             return Ok(students);    
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetStudentById")]
         public ActionResult<StudentDTO> GetStudentById(int id)
         {
             if(id <= 0) 
@@ -87,6 +87,43 @@ namespace CollegeApp.Controllers
 
            
         }
+
+
+        [HttpPost]
+        [Route( "Create")]
+        public ActionResult<StudentDTO>CreateStudent([FromBody ]StudentDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+            int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
+            Student student = new Student {
+                Id = newId,
+                StudentName = model.StudentName,
+                Address = model.Address,
+                Email = model.Email
+
+            };
+            CollegeRepository.Students.Add(student);
+            model.Id = student.Id;
+
+
+            // provide Status - 201 and provide the url of newly created url,and also returns the new
+            //student details i.e from models 
+
+            return CreatedAtRoute("GetStudentById", new {id = model.Id }, model);
+
+            //return Ok(model);
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 
