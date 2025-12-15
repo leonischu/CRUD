@@ -5,8 +5,8 @@ namespace CollegeApp.Data
 {
     public class Student
     {
-        [Key] //It indicates the Primary Key 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Generates the value of a column i.e DB automatically generates the value for a primary key.
+        //[Key] //It indicates the Primary Key 
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Generates the value of a column i.e DB automatically generates the value for a primary key.
         public int Id { get; set; }
         public string StudentName { get; set; }
 
