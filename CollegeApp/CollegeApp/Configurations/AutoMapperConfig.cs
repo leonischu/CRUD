@@ -20,7 +20,8 @@ namespace CollegeApp.Configurations
             //CreateMap<StudentDTO, Student>().ReverseMap().ForMember(n => n.StudentName, opt =>opt.Ignore());
 
             //configuration for transforming some values.to display some meaningful value instead of null.like no data found use this property.
-            //CreateMap<StudentDTO, Student>().ReverseMap().AddTransform<string>(n => string.IsNullOrEmpty(n)? "No address found" : n);
+            //CreateMap<StudentDTO, Student>().ReverseMap().ForMember(n => n.Address, opt =>opt.MapFrom(n => string.IsNullOrEmpty(n.Address));
+            //.AddTransform<string>(n => string.IsNullOrEmpty(n)? "No address found" : n);
             CreateMap<StudentDTO, Student>().ReverseMap();
 
 

@@ -1,5 +1,6 @@
 using CollegeApp.Configurations;
 using CollegeApp.Data;
+using CollegeApp.Data.Repository;
 using CollegeApp.MyLogging;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IMyLogger, LogToFile>();
+builder.Services.AddTransient<IStudentRepository, StudentRepository>();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddDbContext<CollegeDBContext>(options =>
