@@ -213,7 +213,7 @@ namespace CollegeApp.Controllers
             if (patchDocument == null || id <= 0)
                 BadRequest();
 
-            var existingStudent = await _dbContext.Students.Where(s => s.Id ==id).FirstOrDefaultAsync();
+            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id ==id).FirstOrDefaultAsync();
 
 
             if (existingStudent == null)
@@ -233,7 +233,7 @@ namespace CollegeApp.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
              existingStudent = _mapper.Map<Student>(studentDTO);
-
+            _dbContext.Students.Update(existingStudent);
 
             //existingStudent.StudentName = studentDTO.StudentName;
             //existingStudent.Email = studentDTO.Email;
