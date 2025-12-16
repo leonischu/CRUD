@@ -20,9 +20,10 @@ namespace CollegeApp.Controllers
     {
         private readonly ILogger<StudentController> _logger;
         private readonly IMapper _mapper;
-        private readonly ICollegeRepository<Student> _studentRepository;
+        //private readonly ICollegeRepository<Student> _studentRepository;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentController(ILogger<StudentController> logger,IMapper mapper,ICollegeRepository<Student> studentRepository)
+        public StudentController(ILogger<StudentController> logger,IMapper mapper,IStudentRepository studentRepository)
         {
             _logger = logger;
             _mapper = mapper;
@@ -79,7 +80,7 @@ namespace CollegeApp.Controllers
                 return BadRequest();
             }
             //var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
-            var student = await _studentRepository.GetByIdAsync(student => student.Id == id);
+            var student = await _studentRepository.GetAsync(student => student.Id == id);
             if (student == null)
             {
                 _logger.LogError("Student not found with given Id");
@@ -108,7 +109,7 @@ namespace CollegeApp.Controllers
 
             //var student = await _dbContext.Students
               //.FirstOrDefaultAsync(n => n.StudentName.ToLower() == name.ToLower());
-              var student = await _studentRepository.GetByNameAsync(student => student.StudentName.ToLower().Contains(name.ToLower()));
+              var student = await _studentRepository.GetAsync(student => student.StudentName.ToLower().Contains(name.ToLower()));
 
             if (student == null)
                 return NotFound($"No student found with name = {name}");
@@ -189,7 +190,7 @@ namespace CollegeApp.Controllers
                 return BadRequest();
 
             //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == dto.Id).FirstOrDefaultAsync();
-             var existingStudent = await _studentRepository.GetByIdAsync(student => student.Id == dto.Id,true);
+             var existingStudent = await _studentRepository.GetAsync(student => student.Id == dto.Id,true);
 
             if (existingStudent == null)
                 return NotFound();
@@ -227,7 +228,7 @@ namespace CollegeApp.Controllers
 
             //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id ==id).FirstOrDefaultAsync();
 
-            var existingStudent = await _studentRepository.GetByIdAsync(student => student.Id == id, true);
+            var existingStudent = await _studentRepository.GetAsync(student => student.Id == id, true);
 
             if (existingStudent == null)
                 return NotFound();
@@ -271,7 +272,7 @@ namespace CollegeApp.Controllers
             //var student = await _dbContext.Students
             //    .FirstOrDefaultAsync(n => n.Id == id);
 
-            var student = await _studentRepository.GetByIdAsync(student => student.Id == id);
+            var student = await _studentRepository.GetAsync(student => student.Id == id);
 
 
             if (student == null)
