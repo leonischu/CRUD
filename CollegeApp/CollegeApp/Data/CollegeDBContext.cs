@@ -17,7 +17,7 @@ namespace CollegeApp.Data
         {
          // Table 1
             modelBuilder.ApplyConfiguration(new StudentConfig());
-           
+            modelBuilder.ApplyConfiguration(new DepartmentConfig());
         }
 
 

@@ -36,6 +36,9 @@ namespace CollegeApp.Data.Config
                       DOB = new DateTime(2022, 06, 12)
                   }
             });
+            builder.HasOne(n => n.Department).WithMany(n => n.Students)
+                .HasForeignKey(n => n.DepartmentId)
+                .HasConstraintName("Fk_Students_Department");
 
         }
     }

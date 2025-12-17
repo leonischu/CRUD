@@ -6,7 +6,7 @@ namespace CollegeApp.Data.Repository
     {
 
         Task<List<T>> GetAllAsync();
-        Task<T> GetAsync(Expression<Func<T,bool>>, bool useNoTracking = false);
+        Task<T> GetAsync(Expression<Func<T,bool>> filter, bool useNoTracking = false);
 
         //Task<T> GetByNameAsync(Expression<Func<T, bool>> filter);
 
