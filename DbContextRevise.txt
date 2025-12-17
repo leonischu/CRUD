@@ -1,0 +1,30 @@
+public interface ICollegeRepository<T>
+{
+Task<List<T>>GetAllAsync();
+Task<T>GetAsync(Expression<Func<T,bool>>,bool useNoTracking = false);
+Task<T> CreateAsync(T dbRecord);
+Task<T> UpdateAsync(T dbRecord);
+Task<bool>DeleteAsync(T dbRecord);
+}
+
+
+public StudentRepository : CollegeRepository<Student>,IStudentRepository
+{
+private readonly CollegeDBContext _dbContext;
+
+public StudentRepository(CollegeDBContext dbContext):base(dbContext)
+{
+dbContext = dbContext;
+}
+
+
+
+
+public class CollegeDbContext : DbContext{
+public CollegeDbContextOption<CollegeDbContext>options):base(option)
+{}
+public DbSet<Student>Students{get;set}
+protected override void OnModelCreating(ModelBuilder modelBuilder){
+modelBuilder.ApplyConfiguration(new StudentConfig());
+}
+

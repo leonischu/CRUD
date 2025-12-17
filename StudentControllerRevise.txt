@@ -1,0 +1,121 @@
+public class StudentController: ControllerBase
+{
+
+private readonly ILogger<StudentController> _logger;
+private readonly IMapper _mapper;
+private readonly StudentRepository _studentRepository;
+
+public StudentController(ILogger<StudentController> logger, IMapper mapper, StudentRepository studentRepository){
+ _mapper = mapper ;
+_logger = logger ;
+_studentRepository = studentRepositoy;
+
+}
+
+[HttpGet]
+[Route("All")]
+
+
+public async Task<ActionResult<IEnumerable<StudentDTO>>>GetSudent(){
+
+	_logger.LogInformation("Get student method started");
+	var student =  await _studentRepository.GetAllAsync();
+	var studentDTOData = _IMapper.Map<List<StudentDTO>>(students);
+
+	return Ok(studentDTOData);
+}
+
+
+[HttpGet("{id:int}",Name = "GetStudentById")
+
+public async Task<ActionResult<StudentDTO>>(Student).GetStudentByIdAsync(int id){
+
+if(id <= 0) {
+
+_logger.LogWarning("Bad request");
+
+return BadRequest();
+}
+
+var student = await _studentRepository.GetAsync();
+
+if (student == null)
+{
+_logger.LogError("student with given id is not found");
+return NotFound();
+
+}
+var studentDTO = _IMapper.Map<studentDTO>(student);
+return Ok(studentDTO);
+
+}
+
+[HttpPost]
+[Route("Create")]
+public async Task<ActionResult<StudentDTO>>CreateStudentAsync([FromBody] StudentDTO dto)
+{
+if (dto == null)
+return BadRequest();
+
+Student student = _mapper.Map<Student>(dto);
+
+var afterCreation = await _StudentRepository.CreatedAsync();
+
+dto.iD = afterCreation.Id;
+return CreateAtRoute("GetStudentById" new({id=dto.id},dto)
+}
+
+[HttpPut]
+[Route("Update")]
+public async Task<ActionResult<StudentDTO>>CreateStudentAsync([FromBody] StudentDTO dto)
+{
+if(dto == null || dto.id <= 0)
+return BadRequest();
+
+var existingStudent = await _studentRepository.GetAsync(student => student.Id == dto.Id,true);
+
+if(existingStudent == null)
+return NotFound();
+
+var newRecord = _mapper.Map<Student>(dto);
+await _studentRepository.Update(newRecord);
+return NoContent();
+}
+
+[HttpDelete("{id}")]
+
+public async Task<ActionResult<bool>DeleteStudentAsync(int id)
+{
+if(id <= 0)
+return BadRequest("Id must be greater than 0");
+
+var student = await _studentRepository.GetAsync(student => student.ID == id);
+if (student == null)
+return NotFound($"No student found with ID ={id}");
+await _studentRepository.DeleteAsync(student);
+return Ok(true);
+}
+
+[HttpPatch]
+[Route("{id:int}UpdatePartial")]
+
+public async Task<ActionResult<StudentDTO>>UpdateStudentPartialAsync(int id,[FromBody] JsonPatchDocument<StudentDTO>patchDocument)
+{
+if (patchDocument == null || id < 0)
+return BadRequest();
+
+var existingStudent = await _studentRepository.GetAsync( student => student.Id == id,true);
+if(existingStudent == null)
+return NotFound();
+
+var studentDTO = _mapper.Map<Student>(existingStudent);
+patchDocument.ApplyTO(studentDTO,ModelState);
+
+if(!ModelState.IsValid)
+return BadRequest(ModelState);
+existingStudnet = _mapper.Map<Student>(studentDTO);
+
+await _studentRepository.UpdateAsync(existingStudent);
+return Ok(existingStudent);
+
+

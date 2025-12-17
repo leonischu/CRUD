@@ -1,0 +1,30 @@
+public class studentDTO
+{
+
+public int Id {get; set;}
+[Required]
+public string StudentName {get;set;}
+[EmailAddress(ErrorMessage ="please enter the valid email address")
+public string Email {get;set;}
+public stiring Address {get; set;}
+
+[DateCheck]
+public DateTime DOB{get;set;}
+
+}
+
+
+
+
+
+for [DateCheck]
+
+public class DateCheckAttribute : ValidationAttribute
+{
+
+protected override validationResult? IsValid(object?value, ValidationContext validaitonContext)
+{
+var date = (DateTime?)value;
+if(date > DateTime.Now)
+return new ValidationResult("date must ...");
+return ValidationResult.Sucess
