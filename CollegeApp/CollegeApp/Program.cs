@@ -28,6 +28,53 @@ builder.Services.AddDbContext<CollegeDBContext>(options =>
 }
 
 );
+
+builder.Services.AddCors(option =>
+{
+
+    option.AddDefaultPolicy( policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+
+    });
+
+
+
+    //option.AddPolicy("AllowAll", policy =>
+    //{
+    //    // allow all origins
+    //    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+    //    // Allow only few origins
+    //    //policy.WithOrigins("http://localhost:4200");
+
+    //});
+    option.AddPolicy("AllowOnlyLocalhost", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+      
+    });
+    option.AddPolicy("AllowOnlyGoogle", policy =>
+    {
+        policy.WithOrigins("http://google.com","http://gmail.com","http://gmail.com");
+
+      
+    });
+    option.AddPolicy("AllowOnlyMicrosoft", policy =>
+    {
+        policy.WithOrigins("https://Microsoft.com","http://Onedrive.com","http://outlook.com");
+
+      
+    });
+
+
+
+
+});
+
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,6 +84,7 @@ if (app.Environment.IsDevelopment())
     }
 
     app.UseHttpsRedirection();
+    app.UseCors();      // property for using a CORS
 
     app.UseAuthorization();
 

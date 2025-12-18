@@ -13,6 +13,7 @@ namespace CollegeApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[EnableCors(PolicyName  = "AllowOnlyLocalhost")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
