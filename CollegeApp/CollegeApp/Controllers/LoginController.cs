@@ -36,7 +36,7 @@ namespace CollegeApp.Controllers
             if(model.UserName == "Nischal" && model.Password =="Nischal123")
             {
                 //Here we need to generate jwt token 
-                var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecret"));
+                var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforLocal"));
                 var tokenHandler = new JwtSecurityTokenHandler(); // responsible for creating jwt and writing jwt as string
                 var tokenDescriptor = new SecurityTokenDescriptor() // the object describes what goes inside token
                 {

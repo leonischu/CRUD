@@ -15,7 +15,7 @@ namespace CollegeApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[EnableCors(PolicyName  = "AllowOnlyLocalhost")]
-    //[Authorize(Roles = "Superadmin,Admin")] //all the endpoint inside this controller is secured 
+    [Authorize(AuthenticationSchemes = "LoginForLocalUsers",Roles = "Superadmin,Admin")] //all the endpoint inside this controller is secured 
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]

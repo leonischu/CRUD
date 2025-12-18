@@ -76,20 +76,53 @@ builder.Services.AddCors(option =>
 
 
 });
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecret"));
+var keyJWTSecretforGoogle = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecretforGoogle"));
+var keyJWTSecretforMicrosoft = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecretforMicrosoft"));
+var keyJWTSecretforLocal = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecretforLocal"));
+
+
+
+
+
 // JWT Authentication Configuration .Yo halena vane [Authorize] le kaam gardaina 
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+}).AddJwtBearer("LoginForGoogleUsers",options =>
 {
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters()
 
     {
         ValidateIssuerSigningKey = true,    // this validates the signing key
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        IssuerSigningKey = new SymmetricSecurityKey(keyJWTSecretforGoogle),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+
+
+}).AddJwtBearer("LoginForMicrosoftUsers", options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+
+    {
+        ValidateIssuerSigningKey = true,    // this validates the signing key
+        IssuerSigningKey = new SymmetricSecurityKey(keyJWTSecretforMicrosoft),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+
+
+}).AddJwtBearer("LoginForLocalUsers", options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+
+    {
+        ValidateIssuerSigningKey = true,    // this validates the signing key
+        IssuerSigningKey = new SymmetricSecurityKey(keyJWTSecretforLocal),
         ValidateIssuer = false,
         ValidateAudience = false,
     };
