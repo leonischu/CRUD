@@ -2,7 +2,10 @@ using CollegeApp.Configurations;
 using CollegeApp.Data;
 using CollegeApp.Data.Repository;
 using CollegeApp.MyLogging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +76,27 @@ builder.Services.AddCors(option =>
 
 
 });
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecret"));
+// JWT Authentication Configuration .Yo halena vane [Authorize] le kaam gardaina 
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+
+    {
+        ValidateIssuerSigningKey = true,    // this validates the signing key
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+
+
+});
+
 
 
 var app = builder.Build();
@@ -92,3 +116,10 @@ if (app.Environment.IsDevelopment())
 
     app.Run();
 
+
+app.UseEndpoints(endpoints =>
+{
+
+    endpoints.MapGet("api/testendpoint2",
+        context => context.Response.WriteAsync(builder.Configuration.GetValue<string>("JWTSecret")));
+});

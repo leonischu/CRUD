@@ -2,6 +2,7 @@
 using CollegeApp.Data;
 using CollegeApp.Data.Repository;
 using CollegeApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace CollegeApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[EnableCors(PolicyName  = "AllowOnlyLocalhost")]
+    //[Authorize(Roles = "Superadmin,Admin")] //all the endpoint inside this controller is secured 
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -37,6 +39,7 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("All")]
+        //[AllowAnonymous] // if we want to get all the student without any authentication 
         public async Task< ActionResult<IEnumerable<StudentDTO>>> GetStudents()
         {
             _logger.LogInformation("Get students method started");
