@@ -31,15 +31,50 @@ namespace CollegeApp.Controllers
             }
 
             LoginResponseDTO response = new() { Username = model.UserName };
+            string audience = string.Empty;
+            string issuer = string.Empty;
+            byte[] key = null;
+
+            var keyJWTSecretforGoogle = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforGoogle"));
+            var keyJWTSecretforMicrosoft = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforMicrosoft"));
+            var keyJWTSecretforLocal = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforLocal"));
+
+            if (model.Policy == "Local")
+            {
+                issuer = _configuration.GetValue<string>("LocalIssuer");
+                audience = _configuration.GetValue<string>("LocalAudience");
+                key = keyJWTSecretforLocal;
+            }
+
+            else if (model.Policy == "Microsoft")
+            {
+
+                issuer = _configuration.GetValue<string>("MicrosoftIssuer");
+                audience = _configuration.GetValue<string>("MicrosoftAudience");
+
+                key = keyJWTSecretforMicrosoft;
+            }
+            else if (model.Policy == "Google")
+            {
+                issuer = _configuration.GetValue<string>("GoogleIssuer");
+                audience = _configuration.GetValue<string>("GoogleAudience");
+                key = keyJWTSecretforGoogle;
+            }
 
 
-            if(model.UserName == "Nischal" && model.Password =="Nischal123")
+
+            if (model.UserName == "Nischal" && model.Password == "Nischal123")
             {
                 //Here we need to generate jwt token 
-                var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforLocal"));
+                 key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretforLocal"));
                 var tokenHandler = new JwtSecurityTokenHandler(); // responsible for creating jwt and writing jwt as string
                 var tokenDescriptor = new SecurityTokenDescriptor() // the object describes what goes inside token
                 {
+
+                    Issuer = issuer,
+                    Audience = audience,
+
+
                     //Add claim who the user is 
                     Subject = new System.Security.Claims.ClaimsIdentity(new Claim[]
                     { 
@@ -52,7 +87,7 @@ namespace CollegeApp.Controllers
 
                     //Expiration to the token
                     Expires = DateTime.Now.AddHours(4),
-                    SigningCredentials = new(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha512)
+                    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
 
                 };
 
@@ -60,7 +95,7 @@ namespace CollegeApp.Controllers
                 //Now Generate the token
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
-                response.token = tokenHandler.WriteToken(token); 
+                response.token = tokenHandler.WriteToken(token);
 
             }
             else

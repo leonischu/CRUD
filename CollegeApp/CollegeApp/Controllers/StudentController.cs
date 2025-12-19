@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace CollegeApp.Controllers
 {
@@ -25,12 +26,13 @@ namespace CollegeApp.Controllers
         private readonly IMapper _mapper;
         //private readonly ICollegeRepository<Student> _studentRepository;
         private readonly IStudentRepository _studentRepository;
-
-        public StudentController(ILogger<StudentController> logger,IMapper mapper,IStudentRepository studentRepository)
+        private readonly APIResponse _apiResponse;
+        public StudentController(ILogger<StudentController> logger,IMapper mapper,IStudentRepository studentRepository,APIResponse apiResponse)
         {
             _logger = logger;
             _mapper = mapper;
             _studentRepository = studentRepository;
+            _apiResponse = apiResponse;
         }
 
 
@@ -59,7 +61,9 @@ namespace CollegeApp.Controllers
             //var students = await _dbContext.Students.ToListAsync();
 
             var students = await _studentRepository.GetAllAsync();
-            var studentDTOData = _mapper.Map < List < StudentDTO >> (students);
+            _apiResponse.Data = _mapper.Map < List < StudentDTO >> (students);
+             _apiResponse.status = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
             //{
             //    Id = s.Id,
             //    StudentName = s.StudentName,
@@ -68,7 +72,7 @@ namespace CollegeApp.Controllers
             //    DOB = s.DOB
 
             //}).ToListAsync();
-            return Ok(studentDTOData);    
+            return Ok(_apiResponse);    
 
 
             //var students = _dbContext.Students.ToList();
@@ -98,8 +102,14 @@ namespace CollegeApp.Controllers
             //    Email = student.Email,
             //    DOB = student.DOB
             //};
-            var studentDTO = _mapper.Map< StudentDTO >(student);
-            return Ok(studentDTO);
+            _apiResponse.Data = _mapper.Map< StudentDTO >(student);
+
+            _apiResponse.status = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+
+
+            return Ok(_apiResponse);
         }
 
 
@@ -126,9 +136,15 @@ namespace CollegeApp.Controllers
             //    Email = student.Email,
             //    DOB = student.DOB
             //};
-            var studentDTO = _mapper.Map<StudentDTO>(student);
+            _apiResponse.Data = _mapper.Map<StudentDTO>(student);
 
-            return Ok(studentDTO);
+
+            _apiResponse.status = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+
+            
+            return Ok(_apiResponse);
 
 
            
@@ -174,11 +190,19 @@ namespace CollegeApp.Controllers
 
             dto.Id = studentAfterCreation.Id;
 
+            _apiResponse.Data = dto;
+
+
+            _apiResponse.status = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+
+
 
             // provide Status - 201 and provide the url of newly created url,and also returns the new
             //student details i.e from models 
 
-            return CreatedAtRoute("GetStudentById", new {id = dto.Id }, dto);
+            return CreatedAtRoute("GetStudentById", new {id = dto.Id }, _apiResponse);
 
             //return Ok(model);
         }
@@ -261,7 +285,7 @@ namespace CollegeApp.Controllers
             //existingStudent.Address = studentDTO.Address;
             //existingStudent.DOB = studentDTO.DOB;
             //_dbContext.SaveChangesAsync();
-            return Ok(existingStudent);
+            return NoContent();
         }
 
 
@@ -285,7 +309,16 @@ namespace CollegeApp.Controllers
             await _studentRepository.DeleteAsync(student);
             //_dbContext.Students.Remove(student);
             //await _dbContext.SaveChangesAsync();
-            return Ok(true);
+
+            _apiResponse.Data = true;
+
+
+            _apiResponse.status = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+
+
+            return Ok(_apiResponse);
         }
 
 
