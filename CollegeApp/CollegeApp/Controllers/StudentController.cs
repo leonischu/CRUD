@@ -259,7 +259,7 @@ namespace CollegeApp.Controllers
 
                 //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == dto.Id).FirstOrDefaultAsync();
                 var existingStudent = await _studentRepository.GetAsync(student => student.Id == dto.Id, true);
-
+                
                 if (existingStudent == null)
                     return NotFound();
                 //var newRecord = new Student()

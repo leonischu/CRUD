@@ -16,7 +16,7 @@ namespace CollegeApp.Controllers
     {
 
         [HttpGet]
-        Public ActionResult Get()
+        public ActionResult Get()
         {
             return Ok("This is microsoft");
         }
