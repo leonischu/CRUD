@@ -21,7 +21,14 @@ namespace CollegeApp.Data.Config
             builder.Property(n => n.IsActive).HasMaxLength(500).IsRequired();
             builder.Property(n => n.IsDeleted).HasMaxLength(500).IsRequired();
             builder.Property(n => n.CreatedDate).HasMaxLength(500).IsRequired();
-            builder.Property(n => n.UserType).HasMaxLength(500).IsRequired();
+            builder.Property(n => n.UserTypeId).HasMaxLength(500).IsRequired();
+
+
+            builder.HasOne(n => n.UserType).WithMany(n => n.Users)
+                .HasForeignKey(n => n.UserTypeId)
+                .HasConstraintName("Fk_Users_UserTypes");
+
+
 
         }
     }

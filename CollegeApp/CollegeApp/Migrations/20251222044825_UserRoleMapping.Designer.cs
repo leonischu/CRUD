@@ -4,6 +4,7 @@ using CollegeApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CollegeApp.Migrations
 {
     [DbContext(typeof(CollegeDBContext))]
-    partial class CollegeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251222044825_UserRoleMapping")]
+    partial class UserRoleMapping
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,7 +252,7 @@ namespace CollegeApp.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("UserTypeId")
+                    b.Property<int>("UserType")
                         .HasMaxLength(500)
                         .HasColumnType("int");
 
@@ -260,58 +263,7 @@ namespace CollegeApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserTypeId");
-
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("CollegeApp.Data.UserType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserTypes", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "For students",
-                            Name = "Student"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "For Faculty",
-                            Name = "Faculty"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "For Supporting Staff",
-                            Name = "Supporting Staff"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "For parents",
-                            Name = "Parents"
-                        });
                 });
 
             modelBuilder.Entity("CollegeApp.Data.RolePrivilege", b =>
@@ -357,18 +309,6 @@ namespace CollegeApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CollegeApp.Data.User", b =>
-                {
-                    b.HasOne("CollegeApp.Data.UserType", "UserType")
-                        .WithMany("Users")
-                        .HasForeignKey("UserTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("Fk_Users_UserTypes");
-
-                    b.Navigation("UserType");
-                });
-
             modelBuilder.Entity("CollegeApp.Data.Department", b =>
                 {
                     b.Navigation("Students");
@@ -384,11 +324,6 @@ namespace CollegeApp.Migrations
             modelBuilder.Entity("CollegeApp.Data.User", b =>
                 {
                     b.Navigation("UserRoleMappings");
-                });
-
-            modelBuilder.Entity("CollegeApp.Data.UserType", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

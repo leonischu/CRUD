@@ -6,11 +6,9 @@
         public string RolePrivilegeName { get; set; }
 
 
-        public string Password { get; set; }
+        public string Description { get; set; }
 
-        public string PasswordSalt { get; set; }
-
-        public int UserType { get; set; }
+        public int RoleId { get; set; }
 
 
         public bool IsActive { get; set; }
@@ -20,6 +18,7 @@
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
+        public Role Role { get; set; }  
 
     }
 }
