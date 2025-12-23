@@ -15,6 +15,7 @@ namespace DapperASPNetCoree.Contracts
         public Task UpdateCompany(int id, CompanyForUpdateDto company);
 
         public Task DeleteCompany(int id);
+        public Task<Company> GetCompanyByEmployeeId(int id);
 
     }
 

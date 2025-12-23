@@ -61,7 +61,14 @@ namespace DapperASPNetCoree.Controller
             await _companyRepo.DeleteCompany(id);
             return NoContent();
         }
-
+        [HttpGet("ByEmployeeId/{id}")]
+        public async Task<IActionResult>GetCompanyForEmployee(int id)
+        {
+            var company = await _companyRepo.GetCompany(id);
+            if (company is null)
+                return NotFound();
+            return Ok(company);
+        }
 
     }
 }
