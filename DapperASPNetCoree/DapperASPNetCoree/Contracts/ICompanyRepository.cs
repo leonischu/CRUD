@@ -12,6 +12,10 @@ namespace DapperASPNetCoree.Contracts
         public Task<IEnumerable<Company>> GetCompanies();
         public Task<Company> GetCompany(int id);
         public Task<Company> CreateCompany(CompanyForCreatinDto company);
+        public Task UpdateCompany(int id, CompanyForUpdateDto company);
+
+        public Task DeleteCompany(int id);
+
     }
 
 
