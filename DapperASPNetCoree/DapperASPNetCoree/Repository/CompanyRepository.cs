@@ -87,6 +87,40 @@ namespace DapperASPNetCoree.Repository
             }
         }
 
+        public async Task<Company> GetMultipleResults(int id)
+        {
+            var query = "SELECT * FROM Companies WHERE Id = @Id;" + "SELECT * FROM Employees WHERE CompanyId = @Id";
+            // One gets the company and another gets the employee of that company 
+
+
+
+            using(var connection = _context.CreateConnection()) 
+                
+            using (var multi = await connection.QueryMultipleAsync(query, new { id }))
+                // Execute both select queries at once, allows reading from multiple result sets
+
+
+
+            {
+                 var company = await multi.ReadSingleOrDefaultAsync<Company>();
+                if(company is not null)
+                    company.Employees = (await multi.ReadAsync<Employee>()).ToList();
+
+                /* Only read employees if company exists
+
+                    Reads second SELECT
+
+                        Maps rows → List<Employee>
+    
+                    Assigns it to company.Employees  */
+
+                return company;
+            }
+
+
+           
+        }
+
         public async Task UpdateCompany(int id, CompanyForUpdateDto company)
         {
             var query = "Update Companies SET Name = @Name, Address =@Address, Country = @Country WHERE Id = @Id";
