@@ -78,5 +78,13 @@ namespace DapperASPNetCoree.Controller
             return Ok(company);
         }
 
+        [HttpGet("{MultipleMapping")]
+        public async Task<IActionResult> GetMultipleMapping()
+        {
+            var companies  = await _companyRepo.GetMultipleMapping();
+            
+               return Ok(companies );
+        }
+
     }
 }

@@ -121,6 +121,28 @@ namespace DapperASPNetCoree.Repository
            
         }
 
+        public async Task<List<Company>> MultipleMapping()
+        {
+            var query = "SELECT * FROM Companies c JOIN Employees e ON c.Id = e.CompanyId";
+            using(var connection = _context.CreateConnection())
+            {
+                var companyDict = new Dictionary<int, Company>();
+                var companies = await connection.QueryAsync<Company, Employee, Company>(query, (company, employee) =>
+                {
+                    if (!companyDict.TryGetValue(company.Id, out var currentCompany))
+                    {
+                        currentCompany = company;
+                        companyDict.Add(company.Id, currentCompany);
+
+                    }
+                    currentCompany.Employees.Add(employee);
+                    return currentCompany;
+                });
+                return companies.Distinct().ToList();
+            }
+            
+        }
+
         public async Task UpdateCompany(int id, CompanyForUpdateDto company)
         {
             var query = "Update Companies SET Name = @Name, Address =@Address, Country = @Country WHERE Id = @Id";
@@ -134,6 +156,25 @@ namespace DapperASPNetCoree.Repository
             {
                 await connection.ExecuteAsync(query, parameters);   
             }
+        }
+
+
+        public async Task CreateMultipleCompanies(List<CompanyForCreatinDto> companies)
+        {
+            var query = "INSERT INTO Companies(Name,Address,Country) VALUES (@Name,@Address,@Country)";
+
+            using(var connection = _context.CreateConnection()) {
+                connection.Open();
+                using(var transaction = connection.BeginTransaction()) {    
+                    foreach(var company in companies)
+                    {
+                        var parameters = new DynamicParameters();
+                        parameters.Add("Name",company.Name,DbType.String);
+                        parameters.Add("Address",company.Address,DbType.String);
+                        parameters.Add("Country",company.Name,DbType.String);
+                        await connection.ExecuteAsync(query, parameters,transaction : transaction);
+                    }
+                    transaction.Commit();
         }
     }
 }
