@@ -16,7 +16,7 @@ namespace DapperASPNetCoree.Repository
 
         public async Task<Company> CreateCompany(CompanyForCreatinDto company)
         {
-            var query = "INSERT INTO Companies (Name, Address, Country) VALUES (@Name, @Address, @Country)" + "SELECT CAST(SCOPE_IDENTITY() AS int)"; 
+            var query = "INSERT INTO Companies (Name, Address, Country) VALUES (@Name, @Address, @Country)" + "SELECT CAST(SCOPE_IDENTITY() AS int)";
             var parameters = new DynamicParameters();
             //var strsql = new StringBuilder();
             //strsql.AppendFormat(@"")
@@ -25,7 +25,7 @@ namespace DapperASPNetCoree.Repository
             parameters.Add("Country", company.Country, DbType.String);
             using (var connection = _context.CreateConnection())
             {
-                var id = await connection.QuerySingleAsync<int>(query,parameters);
+                var id = await connection.QuerySingleAsync<int>(query, parameters);
 
                 var createdCompany = new Company
                 {
@@ -56,10 +56,10 @@ namespace DapperASPNetCoree.Repository
             var query = "SELECT * FROM Companies";
             using (var connection = _context.CreateConnection())
             {
-            
+
                 var companies = await connection.QueryAsync<Company>(query);
                 return companies.ToList();
-            
+
             }
         }
 
@@ -68,7 +68,7 @@ namespace DapperASPNetCoree.Repository
             var query = "SELECT * FROM Companies WHERE Id = @Id";
             using (var connection = _context.CreateConnection())
             {
-             var company = await connection.QuerySingleOrDefaultAsync<Company>(query, new { id });
+                var company = await connection.QuerySingleOrDefaultAsync<Company>(query, new { id });
                 return company;
 
 
@@ -80,9 +80,9 @@ namespace DapperASPNetCoree.Repository
             var procedureName = "ShowCompanyByEmployeeId";
             var parameters = new DynamicParameters();
             parameters.Add("Id", id, DbType.Int32, ParameterDirection.Input);
-            using(var connection = _context.CreateConnection())
+            using (var connection = _context.CreateConnection())
             {
-                var company = await connection.QueryFirstOrDefaultAsync<Company>(procedureName, parameters,commandType:CommandType.StoredProcedure);
+                var company = await connection.QueryFirstOrDefaultAsync<Company>(procedureName, parameters, commandType: CommandType.StoredProcedure);
                 return company;
             }
         }
@@ -94,16 +94,16 @@ namespace DapperASPNetCoree.Repository
 
 
 
-            using(var connection = _context.CreateConnection()) 
-                
+            using (var connection = _context.CreateConnection())
+
             using (var multi = await connection.QueryMultipleAsync(query, new { id }))
-                // Execute both select queries at once, allows reading from multiple result sets
+            // Execute both select queries at once, allows reading from multiple result sets
 
 
 
             {
-                 var company = await multi.ReadSingleOrDefaultAsync<Company>();
-                if(company is not null)
+                var company = await multi.ReadSingleOrDefaultAsync<Company>();
+                if (company is not null)
                     company.Employees = (await multi.ReadAsync<Employee>()).ToList();
 
                 /* Only read employees if company exists
@@ -118,13 +118,13 @@ namespace DapperASPNetCoree.Repository
             }
 
 
-           
+
         }
 
         public async Task<List<Company>> MultipleMapping()
         {
             var query = "SELECT * FROM Companies c JOIN Employees e ON c.Id = e.CompanyId";
-            using(var connection = _context.CreateConnection())
+            using (var connection = _context.CreateConnection())
             {
                 var companyDict = new Dictionary<int, Company>();
                 var companies = await connection.QueryAsync<Company, Employee, Company>(query, (company, employee) =>
@@ -140,7 +140,7 @@ namespace DapperASPNetCoree.Repository
                 });
                 return companies.Distinct().ToList();
             }
-            
+
         }
 
         public async Task UpdateCompany(int id, CompanyForUpdateDto company)
@@ -154,7 +154,7 @@ namespace DapperASPNetCoree.Repository
 
             using (var connection = _context.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);   
+                await connection.ExecuteAsync(query, parameters);
             }
         }
 
@@ -163,18 +163,22 @@ namespace DapperASPNetCoree.Repository
         {
             var query = "INSERT INTO Companies(Name,Address,Country) VALUES (@Name,@Address,@Country)";
 
-            using(var connection = _context.CreateConnection()) {
+            using (var connection = _context.CreateConnection())
+            {
                 connection.Open();
-                using(var transaction = connection.BeginTransaction()) {    
-                    foreach(var company in companies)
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (var company in companies) //Inserts each company inside same transaction
                     {
                         var parameters = new DynamicParameters();
-                        parameters.Add("Name",company.Name,DbType.String);
-                        parameters.Add("Address",company.Address,DbType.String);
-                        parameters.Add("Country",company.Name,DbType.String);
-                        await connection.ExecuteAsync(query, parameters,transaction : transaction);
+                        parameters.Add("Name", company.Name, DbType.String);
+                        parameters.Add("Address", company.Address, DbType.String);
+                        parameters.Add("Country", company.Country, DbType.String);
+                        await connection.ExecuteAsync(query, parameters, transaction: transaction);
                     }
                     transaction.Commit();
+                }
+            }
         }
     }
 }
