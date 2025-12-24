@@ -83,7 +83,7 @@ namespace DapperASPNetCoree.Controller
         {
             var companies  = await _companyRepo.GetMultipleMapping();
             
-               return Ok(companies );
+               return Ok(compan);
         }
 
     }
